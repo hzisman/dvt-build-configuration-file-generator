@@ -1,4 +1,4 @@
-# DVT `.build` configuration File Generator
+# DVT `.build` Configuration File Generator
 
 This VS Code extension allows for the generation of a `.build` file, which is required for the [DVT extension](https://marketplace.visualstudio.com/items?itemName=amiq.dvt), by using a single command.
 
