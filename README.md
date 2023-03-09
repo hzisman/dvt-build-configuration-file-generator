@@ -14,7 +14,7 @@ To generate a `.build` file, simply open the command palette (<kbd>cmd/ctrl</kbd
 
 This extension was inspired by the impressive Eclipse extension created by Alon Margalit (margal@apple.com).
 
-![Eclipse Extension Button](./images/original-eclipse-extension-button.jpeg)
+![Eclipse Extension Button](images/original-eclipse-extension-button.jpeg)
 
 *The button of the original Eclipse extension*
 
