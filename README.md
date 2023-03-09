@@ -8,7 +8,7 @@ Automatic detection of `run.log` files within the current `tb`'s `build` directo
 
 ## Usage
 
-To generate a .build file, simply open the command palette (<kbd>cmd/ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd>) and search for `Generate .build file...`.
+To generate a `.build` file, simply open the command palette (<kbd>cmd/ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd>) and search for `Generate .build file...`.
 
 ## Thanks
 
