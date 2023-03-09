@@ -13,6 +13,9 @@
     "engines": {
         "vscode": "^1.74.0"
     },
+    "extensionDependencies": [
+        "amiq.dvt"
+    ],
     "categories": [
         "Other"
     ],

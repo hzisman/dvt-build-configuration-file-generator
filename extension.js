@@ -14,6 +14,7 @@ function activate(context) {
 		const builds = await getBuildLogs(workingDirectory);
 		const selectManuallyOption = { label: 'Select run.log file manually...' };
 		
+		// Select run.log file
 		const selectedOption = (
 			Object.keys(builds).length === 0
 			? selectManuallyOption 
@@ -44,7 +45,7 @@ function activate(context) {
 
 		let logFilePath;
 		if (selectedOption.label === selectManuallyOption.label) {
-			const [logFile] = await vscode.window.showOpenDialog({
+			const logFiles = await vscode.window.showOpenDialog({
 				defaultUri: vscode.Uri.parse(workingDirectory),
 				openLabel: 'Select',
 				canSelectMany: false,
@@ -53,11 +54,13 @@ function activate(context) {
 					'All Files': ["*"],
 				},
 			});
-			logFilePath = logFile.fsPath;
+			if (logFiles === undefined) return;
+			logFilePath = logFiles[0].fsPath;
 		} else {
 			logFilePath = builds[selectedOption.label];
 		}
 		
+		// Select name for the build file
 		const buildConfigFileName = await vscode.window.showInputBox({
             placeHolder: 'Build configuration file name',
         });
