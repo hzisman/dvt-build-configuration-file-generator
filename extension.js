@@ -12,25 +12,38 @@ function activate(context) {
 		const workingDirectory = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
 		const builds = await getBuildLogs(workingDirectory);
-		const selectManuallyOption = 'Select run.log file manually...'
+		const selectManuallyOption = { label: 'Select run.log file manually...' };
 		
 		const selectedOption = (
-			builds.length === 0
+			Object.keys(builds).length === 0
 			? selectManuallyOption 
 			: await vscode.window.showQuickPick(
-				[...builds.map(b => b.build), selectManuallyOption],
+				[
+					{
+						label: 'Existing Builds',
+						kind: vscode.QuickPickItemKind.Separator
+					},
+					...Object.keys(builds).map(label => ({ label })),
+					{
+						label: 'Select Manually',
+						kind: vscode.QuickPickItemKind.Separator
+					},
+					selectManuallyOption,
+				],
 				{
-					title: 'Select build',
+					title: 'Select Build',
 					matchOnDescription: true,
 					matchOnDetail: true,
-					placeHolder: 'Select build',
+					placeHolder: 'Select Build',
 					canPickMany: false,
 				},
 			)
 		);
 
+		if (selectedOption === undefined) return;
+
 		let logFilePath;
-		if (selectedOption === selectManuallyOption) {
+		if (selectedOption.label === selectManuallyOption.label) {
 			const [logFile] = await vscode.window.showOpenDialog({
 				defaultUri: vscode.Uri.parse(workingDirectory),
 				openLabel: 'Select',
@@ -42,7 +55,7 @@ function activate(context) {
 			});
 			logFilePath = logFile.fsPath;
 		} else {
-			logFilePath = builds[selectedOption];
+			logFilePath = builds[selectedOption.label];
 		}
 		
 		const buildConfigFileName = await vscode.window.showInputBox({

@@ -1,9 +1,14 @@
 {
     "name": "dvt-build-configuration-file-generator",
     "displayName": "DVT Build Configuration File Generator",
-    "repository": "https://github.com/hzisman/dvt-build-configuration-file-generator.git",
     "description": "",
     "version": "0.0.1",
+    "publisher": "hzism",
+    "repository": {
+        "type": "github",
+        "url": "https://github.com/hzisman/dvt-build-configuration-file-generator"
+    },
+    "icon": "./images/icon.png", 
     "engines": {
         "vscode": "^1.74.0"
     },
@@ -16,7 +21,8 @@
         "commands": [
             {
                 "command": "dvt-build-configuration-file-generator.generatebuildfile",
-                "title": "Generate .build File..."
+                "title": "Generate .build File...",
+                "category": "DVT Build Generator"
             }
         ]
     },
@@ -29,7 +35,7 @@
         "@types/glob": "^8.1.0",
         "@types/mocha": "^10.0.1",
         "@types/node": "16.x",
-        "@types/vscode": "^1.76.0",
+        "@types/vscode": "^1.74.0",
         "@vscode/test-electron": "^2.2.3",
         "eslint": "^8.34.0",
         "glob": "^8.1.0",
