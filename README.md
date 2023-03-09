@@ -16,7 +16,7 @@ This extension was inspired by the impressive Eclipse extension created by Alon 
 
 ![Eclipse Extension Button](./images/original-eclipse-extension-button.jpeg)
 
-*The original Eclipse extension button*
+*The button of the original Eclipse extension*
 
 ## Concat
 
