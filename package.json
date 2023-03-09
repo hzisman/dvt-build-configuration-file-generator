@@ -1,6 +1,7 @@
 {
     "name": "dvt-build-configuration-file-generator",
     "displayName": "DVT Build Configuration File Generator",
+    "repository": "https://github.com/hzisman/dvt-build-configuration-file-generator.git",
     "description": "",
     "version": "0.0.1",
     "engines": {
