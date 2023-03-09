@@ -1,13 +1,14 @@
 {
     "name": "dvt-build-configuration-file-generator",
     "displayName": "DVT Build Configuration File Generator",
-    "description": "",
+    "description": "Generates a .build file for DVT projects in VS Code.",
     "version": "0.0.1",
-    "publisher": "hzism",
+    "publisher": "hzisman",
     "repository": {
-        "type": "github",
-        "url": "https://github.com/hzisman/dvt-build-configuration-file-generator"
+        "type": "git",
+        "url": "https://github.com/hzisman/dvt-build-configuration-file-generator.git"
     },
+    "license": "MIT",
     "icon": "./images/icon.png", 
     "engines": {
         "vscode": "^1.74.0"
@@ -15,6 +16,11 @@
     "categories": [
         "Other"
     ],
+    "keywords": ["dvt", "build", "configuration", "generator"],
+    "homepage": "https://github.com/hzisman/dvt-build-configuration-file-generator",
+    "bugs": { 
+        "url": "https://github.com/hzisman/dvt-build-configuration-file-generator/issues" 
+    },
     "activationEvents": [],
     "main": "./extension.js",
     "contributes": {
