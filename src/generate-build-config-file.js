@@ -27,7 +27,7 @@ async function generateBuildConfigFile(logPath, workingDirectory, buildFileName 
     const content = await parse(logPath, workingDirectory);
     const endLines = getEndLines();
 
-    const buildFileContent = `${startLines}\n\n${content}\n\n${endLines}`;
+    const buildFileContent = `${startLines}\n\n${content}\n${endLines}`;
 
     try {
         await fs.writeFile(buildFilePath, buildFileContent, { encoding: 'utf-8', flag: 'w' });
@@ -49,7 +49,7 @@ function getStartLines({ logPath, workingDirectory }) {
     return text(`
         # ------------------------------------------------------------------------------------
         # This file has been automatically generated from the following log file:
-        # ${runLogPath}.
+        # ${runLogPath}
         # If you encounter any issues, please contact Hadassa Zisman at h_zisman@apple.com.
         # ------------------------------------------------------------------------------------
         +dvt_init+vcs.vlogan -sverilog
