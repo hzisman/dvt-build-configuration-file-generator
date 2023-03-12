@@ -89,7 +89,8 @@ async function activate(context) {
 
         try {
             await generateBuildConfigFile(logFilePath, workingDirectory, buildConfigFileName);
-            await vscode.window.showInformationMessage(`${buildConfigFileName}.build file generated successfully!`);
+            vscode.window.showInformationMessage(`${buildConfigFileName}.build file generated successfully!`);
+            await vscode.commands.executeCommand('dvt.setCurrentBuildConfiguration', `${buildConfigFileName}.build`);
         } catch (error) {
             await vscode.window.showErrorMessage(`Error generating build configuration file: ${error.message}`);
         }
