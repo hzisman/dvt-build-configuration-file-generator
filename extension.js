@@ -18,12 +18,12 @@ async function selectLogFile(workingDirectory, logs) {
         [
             {
                 label: 'Existing logs',
-                kind: vscode.QuickPickItemKind.Separator
+                kind: vscode.QuickPickItemKind.Separator,
             },
             ...logs.map(log => ({ label: log.displayName })),
             {
                 label: 'Select Manually',
-                kind: vscode.QuickPickItemKind.Separator
+                kind: vscode.QuickPickItemKind.Separator,
             },
             selectManuallyOption,
         ],
@@ -92,7 +92,7 @@ async function activate(context) {
         try {
             await generateBuildConfigFile(logFilePath, workingDirectory, buildConfigFileName);
             vscode.window.showInformationMessage(`${buildConfigFileName}.build file generated successfully!`);
-            await vscode.commands.executeCommand('dvt.setCurrentBuildConfiguration', `${buildConfigFileName}.build`);
+            await vscode.commands.executeCommand('dvt.setCurrentBuildConfiguration');
         } catch (error) {
             await vscode.window.showErrorMessage(`Error generating build configuration file: ${error.message}`);
         }
