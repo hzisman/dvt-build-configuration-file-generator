@@ -50,7 +50,7 @@
                     "default": [
                         "../build/(*)/_COMPILED_TESTBENCHES_/*/xlm/tb/xrun.log"
                     ],
-                    "markdownDescription": "Configure [glob](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options) patterns for searching log files. Enclose in parentheses the part of the path that should be displayed."
+                    "markdownDescription": "Configure [glob](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options) patterns for searching log files. Enclose in parentheses the parts of the path that should be displayed."
                 }
             }
         }

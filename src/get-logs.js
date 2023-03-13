@@ -11,14 +11,19 @@ async function getLogs(workingDirectory, searchLocations) {
     const logs = [];
 
     for (const location of searchLocations) {
-        const globPattern = `${workingDirectory}/${globWithGroupsToGlob(location)}`;
+        const globPattern = (
+            location.startsWith('/') || location.startsWith('~') 
+            ? ''
+            : workingDirectory + '/'
+        ) + globWithGroupsToGlob(location);
+       
         const logFiles = await glob(globPattern);
 
         // Remove leading dots from location to match with file names
         const regexp = globWithGroupsToRegexp(location.replace(/^[.]+/, ''));
 
         for (const file of logFiles) {
-            const displayName = file.match(regexp)?.[1] ?? file;
+            const displayName = file.match(regexp)?.slice(1).join(' - ') ?? file;
             logs.push({ displayName, path: file });
         }
     }
