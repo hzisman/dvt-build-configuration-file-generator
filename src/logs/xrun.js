@@ -18,9 +18,14 @@ function parseLine(line, workingDirectory) {
         line = (prefix ?? '') + normalize(location);
     }
 
-    // Remove lines that start with -y or -v.
-    if (line.startsWith('-y ') || line.startsWith('-v ')) {
-        return '';
+    const flagsToSkip = [
+        '-y ',
+        '-v ',
+        '-encdpmomincond ',
+    ];
+
+    for (const flag of flagsToSkip) {
+        if (line.startsWith(flag)) return '';
     }
 
     // If the line starts with -f, add a comment to indicate the file's content.

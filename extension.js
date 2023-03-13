@@ -31,7 +31,7 @@ async function selectLogFile(workingDirectory, logs) {
             title: 'Select Build',
             matchOnDescription: true,
             matchOnDetail: true,
-            placeHolder: 'Select Build',
+            placeHolder: 'Filter',
             canPickMany: false,
         },
     );
@@ -62,9 +62,11 @@ async function selectLogFile(workingDirectory, logs) {
  * @returns {Promise<string|undefined>} The name of the build configuration file or undefined if no name was provided.
  */
 async function selectBuildConfigFileName() {
-    return vscode.window.showInputBox({
+    const userInput = await vscode.window.showInputBox({
         placeHolder: 'Build configuration file name',
     });
+    
+    return userInput === '' ? 'default': userInput;
 }
 
 /**

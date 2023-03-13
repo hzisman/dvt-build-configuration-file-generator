@@ -1,18 +1,18 @@
-# DVT .build Configuration File Generator
+# DVT `.build` Configuration File Generator
 
 The DVT Build Configuration File Generator is a VS Code extension that simplifies the creation of a `.build` file for [DVT](https://marketplace.visualstudio.com/items?itemName=amiq.dvt) projects. With this extension, you can generate a `.build` file using a single command.
 
 ## Features
 
 - Automatic detection of `*.log` files within the current `tb`'s build directory, making it easy to select the desired files. It is possible to customize the locations where the extension looks for log files.
-- Ability to manually select a `*.log` file for generating a .build file.
+- Ability to manually select a `*.log` file for generating a `.build` file.
 
 ## Usage
 
-To generate a .build file, follow these steps:
+To generate a `.build` file, follow these steps:
 
 - Open a DVT project in VS Code.
-- Open the command palette (<kbd>cmd/ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd>) and search for `Generate .build file....`
+- Open the command palette (<kbd>cmd/ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd>) and search for `Generate .build file...`.
 - Choose a build from the list file you want to use for generating the `.build` file, or select a log file manually.
 Requirements
 
