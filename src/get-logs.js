@@ -1,4 +1,6 @@
 const glob = require('glob-promise');
+const os = require('os');
+
 const { globWithGroupsToGlob, globWithGroupsToRegexp } = require('./glob/glob-with-groups');
 
 /**
@@ -11,16 +13,20 @@ async function getLogs(workingDirectory, searchLocations) {
     const logs = [];
 
     for (const location of searchLocations) {
-        const globPattern = (
-            location.startsWith('/') || location.startsWith('~') 
-            ? ''
-            : workingDirectory + '/'
-        ) + globWithGroupsToGlob(location);
+
+        let globPattern;
+        if (location.startsWith('/')) {
+            globPattern = globWithGroupsToGlob(location);
+        } else if (location.startsWith('~')) {
+            globPattern = os.homedir() + globWithGroupsToGlob(location.slice(1));
+        } else {
+            globPattern = workingDirectory + '/' + globWithGroupsToGlob(location);
+        }
        
         const logFiles = await glob(globPattern);
 
         // Remove leading dots from location to match with file names
-        const regexp = globWithGroupsToRegexp(location.replace(/^[.]+/, ''));
+        const regexp = globWithGroupsToRegexp(location.replace(/^([.]+|~)/, ''));
 
         for (const file of logFiles) {
             const displayName = file.match(regexp)?.slice(1).join(' - ') ?? file;
