@@ -33,7 +33,7 @@ async function getLogs(workingDirectory, searchLocations) {
 
             let existsLog = logs.find(log => log.path === file)
             if (existsLog) {
-                existsLog.displayName += `• ${displayName}`;
+                existsLog.displayName += ` ◉ ${displayName}`;
             } else {
                 logs.push({ displayName, path: file });
             }
