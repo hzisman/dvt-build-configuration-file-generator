@@ -1,4 +1,5 @@
 const glob = require('glob-promise');
+const globToRegexp = require('glob-to-regexp');
 const os = require('os');
 
 const { globWithGroupsToGlob, globWithGroupsToRegexp } = require('./glob/glob-with-groups');
@@ -7,9 +8,10 @@ const { globWithGroupsToGlob, globWithGroupsToRegexp } = require('./glob/glob-wi
  * Get logs from search locations in the working directory.
  * @param {string} workingDirectory - The path to the working directory.
  * @param {string[]} searchLocations - The locations where logs are searched.
+ * @param {string[]} excludeSearchLocations - The locations where the logs there will be ommited
  * @returns {Promise<{ displayName: string, path: string }[]>} - A promise that resolves to an array of objects containing the display name and path of logs.
  */
-async function getLogs(workingDirectory, searchLocations) {
+async function getLogs(workingDirectory, searchLocations, excludeSearchLocations) {
     const logs = [];
 
     for (const location of searchLocations) {
@@ -29,6 +31,10 @@ async function getLogs(workingDirectory, searchLocations) {
         const regexp = globWithGroupsToRegexp(location.replace(/^([.]+|~)/, ''));
 
         for (const file of logFiles) {
+            if (excludeSearchLocations.some(loc => globToRegexp(loc).test(file))) {
+                continue;
+            }
+
             const displayName = file.match(regexp)?.slice(1).join(' - ') ?? file;
 
             let existsLog = logs.find(log => log.path === file)

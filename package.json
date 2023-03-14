@@ -51,6 +51,14 @@
                         "../build/(*)/_COMPILED_TESTBENCHES_/*/xlm/tb/xrun.log"
                     ],
                     "markdownDescription": "Configure [glob](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options) patterns for searching log files. Enclose in parentheses the parts of the path that should be displayed."
+                },
+                "dvt-build-configuration-file-generator.excludeSearchLocations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "markdownDescription": "Configure [glob](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options) patterns for excluding some location that will not be included in the extension's search scope."
                 }
             }
         }

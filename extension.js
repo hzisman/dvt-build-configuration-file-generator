@@ -20,7 +20,7 @@ async function selectLogFile(workingDirectory, logs) {
                 label: 'Existing logs',
                 kind: vscode.QuickPickItemKind.Separator,
             },
-            ...logs.map(log => ({ label: log.displayName })),
+            ...logs.map(log => ({ label: log.displayName, detail: log.path })),
             {
                 label: 'Select Manually',
                 kind: vscode.QuickPickItemKind.Separator,
@@ -81,7 +81,8 @@ async function activate(context) {
         const config = vscode.workspace.getConfiguration('dvt-build-configuration-file-generator');
         
 		const searchLocations = config.get('searchLocations');
-        const logs = await getLogs(workingDirectory, searchLocations);
+        const excludeSearchLocations = config.get('excludeSearchLocations')
+        const logs = await getLogs(workingDirectory, searchLocations, excludeSearchLocations);
 
         const logFilePath = await selectLogFile(workingDirectory, logs);
         if (logFilePath === undefined) return;
