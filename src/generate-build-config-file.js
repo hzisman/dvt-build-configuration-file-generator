@@ -1,7 +1,6 @@
 const fs = require('fs/promises');
 const path = require('path');
 const { getParser } = require('./logs');
-const { text, getFileName } = require('./utils');
 
 /**
  * Generates a .build file for the DVT Extension.
@@ -19,7 +18,8 @@ async function generateBuildConfigFile(logPath, workingDirectory, buildFileName 
         throw new Error('Cannot find a .dvt folder in the current location.');
     }
 
-    const logType = getFileName(logPath);
+    const logType = path.basename(logPath, path.extname(logPath));
+
     const { parse } = getParser(logType);
 
     const buildFilePath = path.join(dvtPath, `${buildFileName}.build`);

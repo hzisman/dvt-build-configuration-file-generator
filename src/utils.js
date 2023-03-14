@@ -31,17 +31,7 @@ function text(unformattedText) {
     return unformattedText.split('\n').map(line => line.trim()).join('\n');
 }
 
-/**
- * Returns the filename without the all the path and the extension from the given file path.
- * @param {string} filePath - The file path.
- * @returns {string} - The filename without all the path and the extension.
- */
-function getFileName(filePath) {
-    return filePath.split('/').pop().replace(/[.]\S+$/, '');
-}
-
 module.exports = {
     getNormalizePathFn,
     text,
-    getFileName,
 }
