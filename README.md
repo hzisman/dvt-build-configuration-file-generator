@@ -9,6 +9,11 @@ The DVT Build Configuration File Generator is a VS Code extension that simplifie
 - Automatic detection of `*.log` files within the current `tb`'s build directory, making it easy to select the desired files. It is possible to customize the locations where the extension looks for log files.
 - Ability to manually select a `*.log` file for generating a `.build` file.
 
+
+## Supported Log Types
+
+Currently only `xrun.log` log files are supported. If you using another compiler you can open issue with a log file format example.
+
 ## Usage
 
 To generate a `.build` file, follow these steps:

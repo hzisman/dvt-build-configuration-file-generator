@@ -9,9 +9,10 @@ const { getLogs } = require('./src/get-logs');
  * @param {Object[]} logs - An array of log objects to choose from.
  * @param {string} logs[].displayName - The display name of the log file.
  * @param {string} logs[].path - The absolute path of the log file.
+ * @param {boolean} showFullPath - Controls wheather or not to display for each log its full path
  * @returns {Promise<string|undefined>} - The path of the selected log file or undefined if none was selected.
  */
-async function selectLogFile(workingDirectory, logs) {
+async function selectLogFile(workingDirectory, logs, showFullPath) {
     const selectManuallyOption = { label: 'Select log file manually...' };
 
     const selectedOption = await vscode.window.showQuickPick(
@@ -20,7 +21,10 @@ async function selectLogFile(workingDirectory, logs) {
                 label: 'Existing logs',
                 kind: vscode.QuickPickItemKind.Separator,
             },
-            ...logs.map(log => ({ label: log.displayName, detail: log.path })),
+            ...logs.map(log => ({ 
+                label: log.displayName, 
+                ...(showFullPath ? { detail: log.path } : {}),
+            })),
             {
                 label: 'Select Manually',
                 kind: vscode.QuickPickItemKind.Separator,
@@ -84,7 +88,8 @@ async function activate(context) {
         const excludeSearchLocations = config.get('excludeSearchLocations')
         const logs = await getLogs(workingDirectory, searchLocations, excludeSearchLocations);
 
-        const logFilePath = await selectLogFile(workingDirectory, logs);
+        const showFullPath = config.get('showFullPath');
+        const logFilePath = await selectLogFile(workingDirectory, logs, showFullPath);
         if (logFilePath === undefined) return;
 
         const buildConfigFileName = await selectBuildConfigFileName();

@@ -36,13 +36,7 @@ async function getLogs(workingDirectory, searchLocations, excludeSearchLocations
             }
 
             const displayName = file.match(regexp)?.slice(1).join(' - ') ?? file;
-
-            let existsLog = logs.find(log => log.path === file)
-            if (existsLog) {
-                existsLog.displayName += ` ◉ ${displayName}`;
-            } else {
-                logs.push({ displayName, path: file });
-            }
+            logs.push({ displayName, path: file });
         }
     }
 

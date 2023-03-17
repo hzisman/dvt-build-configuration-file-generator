@@ -59,6 +59,19 @@
                     },
                     "default": [],
                     "markdownDescription": "Configure [glob](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options) patterns for excluding some location that will not be included in the extension's search scope."
+                },
+                "dvt-build-configuration-file-generator.showFullPath": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Controls wheather or not to display for each log its full path."
+                },
+                "dvt-build-configuration-file-generator.tops": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [ "tb_top", "hw_top" ],
+                    "description": "Configure which module will be elaborated as tops."
                 }
             }
         }

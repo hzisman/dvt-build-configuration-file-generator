@@ -21,11 +21,20 @@ function parseLine(line, workingDirectory) {
     const flagsToSkip = [
         '-y ',
         '-v ',
-        '-encdpmomincond ',
     ];
+
+    const flagsToComment = [
+        '-encdpmomincond ',
+        '-lps_1801_msg ',
+        'User defined plus("+") options:',
+    ]
 
     for (const flag of flagsToSkip) {
         if (line.startsWith(flag)) return '';
+    }
+
+    for (const flag of flagsToComment) {
+        if (line.startsWith(flag)) return `# ${line}`;
     }
 
     // If the line starts with -f, add a comment to indicate the file's content.

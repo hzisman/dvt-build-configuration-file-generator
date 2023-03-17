@@ -53,6 +53,8 @@ function getStartLines({ logPath, workingDirectory }) {
         # ${runLogPath}
         # If you encounter any issues, please contact Hadassa Zisman at h_zisman@apple.com.
         # ------------------------------------------------------------------------------------
+        # Generated at: ${new Date().toLocaleString()}
+        # ------------------------------------------------------------------------------------
         +dvt_init+vcs.vlogan -sverilog
         +dvt_init+ius.irun
         +dvt_compilation_root+${dvtCompilationRoot}
@@ -66,11 +68,10 @@ function getStartLines({ logPath, workingDirectory }) {
  * Returns the last lines of the .build file.
  * @returns {string} The last lines of the .build file.
  */
-function getEndLines() {
+function getEndLines(tops) {
     return text(`
         # End lines
-        -top hw_top
-        -top tb_top
+        ${tops.map(top => `-top ${top}`).join('\n')}
     `);
 }
 
