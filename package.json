@@ -2,7 +2,7 @@
     "name": "dvt-build-configuration-file-generator",
     "displayName": "DVT Build Configuration File Generator",
     "description": "Generates a .build file for DVT projects in VS Code.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "hzisman",
     "repository": {
         "type": "git",
@@ -102,7 +102,10 @@
                     "items": {
                         "type": "string"
                     },
-                    "default": [ "-y *", "-v *"],
+                    "default": [
+                        "-y *",
+                        "-v *"
+                    ],
                     "description": "Directives to skip for run time improvement"
                 },
                 "dvt-build-configuration-file-generator.buildFile.skipCompiles": {
