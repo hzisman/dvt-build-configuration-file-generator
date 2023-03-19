@@ -8,19 +8,15 @@ const { text } = require('./utils');
  * @param {Object} options - The options for generating the build configuration file.
  * @param {string} options.logPath - The path to the log file.
  * @param {string} options.workingDirectory - The working directory.
- * @param {string[]} [options.tops=[]] - The tops to include in the build configuration file.
- * @param {number} [options.semanticChecksTimeout=300] - The semantic checks timeout in seconds.
  * @param {string} [options.buildFileName=dvt_build] - The name of the build configuration file.
- * @param {Object[]} [options.pathTransformations=[]] - The path transformations.
+ * @param {Object} options.buildFileConfig - Configuration options for the build file
  * @returns {Promise<void>}
  */
 async function generateBuildConfigFile({
     logPath,
     workingDirectory,
-    tops=[],
-    semanticChecksTimeout=300,
     buildFileName='default',
-    pathTransformations = [],
+    buildFileConfig,
 }) {
     const dvtPath = path.posix.join(workingDirectory, '.dvt');
 
@@ -35,9 +31,9 @@ async function generateBuildConfigFile({
     const { parse } = getParser(logType);
 
     const buildFilePath = path.posix.join(dvtPath, `${buildFileName}.build`);
-    const startLines = getStartLines({ logPath, workingDirectory, semanticChecksTimeout });
-    const content = await parse(logPath, pathTransformations);
-    const endLines = getEndLines(tops);
+    const startLines = getStartLines({ logPath, workingDirectory, buildFileConfig });
+    const content = await parse(logPath, buildFileConfig.pathTransformations);
+    const endLines = getEndLines(buildFileConfig.tops);
 
     const buildFileContent = `${startLines}\n\n${content}\n${endLines}`;
 
@@ -53,12 +49,14 @@ async function generateBuildConfigFile({
  * @param {Object} options - The options for generating the start lines.
  * @param {string} options.logPath - The path to the log file.
  * @param {string} options.workingDirectory - The working directory.
- * @param {number} options.semanticChecksTimeout - The semantic checks timeout in seconds.
+ * @param {Object} options.buildFileConfig - Configuration options for the build file
  * @returns {string}
  */
-function getStartLines({ logPath, workingDirectory, semanticChecksTimeout }) {
+function getStartLines({ logPath, workingDirectory, buildFileConfig }) {
     const dvtCompilationRoot = workingDirectory;
     const runLogPath = logPath ? path.normalize(logPath) : '';
+
+    const { semanticChecksTimeout, skipDirectives, skipCompiles } = buildFileConfig;
     return text(`
         # ------------------------------------------------------------------------------------
         # This file has been automatically generated from the following log file:
@@ -72,6 +70,9 @@ function getStartLines({ logPath, workingDirectory, semanticChecksTimeout }) {
         +dvt_compilation_root+${dvtCompilationRoot}
         +dvt_semantic_checks_timeout+${semanticChecksTimeout}
         +incdir+${dvtCompilationRoot}
+        # Run time improvments
+        ${skipDirectives.map(d => `+dvt_skip_directive+"${d}"`).join('\n')}
+        ${skipCompiles.map(c => `+dvt_skip_compile+"${c}"`).join('\n')}
         # ------------------------------------------------------------------------------------
     `);
 }

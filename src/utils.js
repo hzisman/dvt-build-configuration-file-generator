@@ -20,6 +20,37 @@ function transformPath(path, transformations) {
 }
 
 /**
+ * Returns true if the string can be a valid path otherwise false
+ * 
+ * @param {string} string 
+ * @returns {boolean} 
+ */
+function isPath(string) {
+    return string.indexOf(' ') === -1 && /\.\w+/.test(string) && !/^[-+]/.test(string);
+}
+
+/**
+ * Returns true if the line can be a valid line in the .build file otherwise false
+ * 
+ * @param {string} line 
+ * @returns {boolean}
+ */
+function isValidDvtBuildConfigLine(line) {
+    let validFlags = [
+        '-y ',
+        '-v ',
+        '+incdir+',
+        '+dvt_',
+        '#',
+        '+define+',
+        '-f ',
+        '-top ',
+    ]
+
+    return validFlags.some(flag => line.startsWith(flag)) || isPath(line);
+}
+
+/**
  * Formats text by removing leading and trailing whitespace from each line.
  *
  * @param {string} unformattedText - The unformatted text to format.
@@ -31,5 +62,6 @@ function text(unformattedText) {
 
 module.exports = {
     transformPath,
+    isValidDvtBuildConfigLine,
     text,
 };

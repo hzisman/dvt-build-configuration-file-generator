@@ -1,10 +1,10 @@
 const fs = require('fs/promises');
-const { transformPath } = require('../utils');
+const { transformPath, isValidDvtBuildConfigLine } = require('../utils');
 
 /**
  * Parses a line of the xrun command and applies any necessary transformations.
  * @param {string} line - A line from the xrun command.
- * @param {Object} pathTransformations - An object containing path transformations to apply.
+ * @param {Array<{ from: string, to: string }>} pathTransformations - An array of transformation objects.
  * @returns {string} - The parsed line.
  */
 function parseLine(line, pathTransformations) {
@@ -16,28 +16,13 @@ function parseLine(line, pathTransformations) {
         line = (prefix ?? '') + transformPath(location, pathTransformations);
     }
 
-    const flagsToSkip = [
-        '-y ',
-        '-v ',
-    ];
-
-    const flagsToComment = [
-        '-encdpmomincond ',
-        '-lps_1801_msg ',
-        'User defined plus("+") options:',
-    ]
-
-    for (const flag of flagsToSkip) {
-        if (line.startsWith(flag)) return '';
-    }
-
-    for (const flag of flagsToComment) {
-        if (line.startsWith(flag)) return `# ${line}`;
-    }
-
     // If the line starts with -f, add a comment to indicate the file's content.
     if (line.startsWith('-f ')) {
         return `\n# Content from ${line.slice(3)}`;
+    }
+
+    if (!isValidDvtBuildConfigLine(line)) {
+        return '';
     }
 
     return line;
@@ -65,7 +50,7 @@ async function extractXrunCommand(logPath) {
 /**
  * Parses the xrun command from the given log file and generates the build file content.
  * @param {string} runLogPath - The path to the log file.
- * @param {Object} pathTransformations - An object containing path transformations to apply.
+ * @param {Array<{ from: string, to: string }>} pathTransformations - An array of transformation objects.
  * @returns {Promise<string>} - The content of the build file.
  */
 async function parse(runLogPath, pathTransformations) {

@@ -9,7 +9,6 @@ The DVT Build Configuration File Generator is a VS Code extension that simplifie
 - Automatic detection of `*.log` files within the current `tb`'s build directory, making it easy to select the desired files. It is possible to customize the locations where the extension looks for log files.
 - Ability to manually select a `*.log` file for generating a `.build` file.
 
-
 ## Supported Log Types
 
 Currently only `xrun.log` log files are supported. If you using another compiler you can open issue with a log file format example.
@@ -27,18 +26,12 @@ To use this extension, you must have the [DVT extension](https://marketplace.vis
 
 ## Acknowledgements
 
-This extension was inspired by the Eclipse extension created by Alon Margalit (margal@apple.com).
+This extension was inspired by the Eclipse extension created by Alon Margalit.
 
 ![Eclipse Extension Button](https://github.com/hzisman/dvt-build-configuration-file-generator/blob/main/images/original-eclipse-extension-button.jpeg?raw=true)
 
 *The button of the original Eclipse extension*
 
-## Contact
-
-If you encounter any issues or have feature suggestions, please contact h_zisman@apple.com.
-
 ## Contributing
 
 Contributions are welcome! If you would like to contribute to this project, please fork the [repository](https://github.com/hzisman/dvt-build-configuration-file-generator.git) and submit a pull request.
-
-

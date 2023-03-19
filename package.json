@@ -23,7 +23,9 @@
         "dvt",
         "build",
         "configuration",
-        "generator"
+        "generator",
+        "systemverilog",
+        "verilog"
     ],
     "homepage": "https://github.com/hzisman/dvt-build-configuration-file-generator",
     "bugs": {
@@ -65,7 +67,7 @@
                     "default": false,
                     "description": "Controls wheather or not to display for each log its full path."
                 },
-                "dvt-build-configuration-file-generator.tops": {
+                "dvt-build-configuration-file-generator.buildFile.tops": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -76,12 +78,12 @@
                     ],
                     "description": "Configure which module will be elaborated as tops."
                 },
-                "dvt-build-configuration-file-generator.semanticChecksTimeoutProperty": {
+                "dvt-build-configuration-file-generator.buildFile.semanticChecksTimeout": {
                     "type": "integer",
                     "default": 90,
                     "markdownDescription": "Sets the value of the `+dvt_semantic_checks_timeout parameter` parameter in the `.build` file. The parameter specifies the maximum time (in seconds) that semantic checks can take to parse a file before they are stopped (`0` means don't stop)."
                 },
-                "dvt-build-configuration-file-generator.pathTransformations": {
+                "dvt-build-configuration-file-generator.buildFile.pathTransformations": {
                     "type": "array",
                     "items": {
                         "type": "object",
@@ -97,6 +99,25 @@
                         }
                     },
                     "markdownDescription": "A list of transformations to apply for every path in the `.build` file, You can refer to groups from the `to` property with `$1`, `$2` and so on."
+                },
+                "dvt-build-configuration-file-generator.buildFile.skipDirectives": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [ "-y *", "-v *"],
+                    "description": "Directives to skip for run time improvement"
+                },
+                "dvt-build-configuration-file-generator.buildFile.skipCompiles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "*/memories/*",
+                        "*/ROM/*"
+                    ],
+                    "description": "Compiles to skip for run time improvement"
                 }
             }
         }
