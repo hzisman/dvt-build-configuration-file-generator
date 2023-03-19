@@ -4,14 +4,25 @@ const { getParser } = require('./logs');
 const { text } = require('./utils');
 
 /**
- * Generates a .build file for the DVT Extension.
- * @param {string} logPath - The path to the log file.
- * @param {string} workingDirectory - The working directory.
- * @param {string} [buildFileName='default'] - The name of the output file.
- * @throws {Error} If the .dvt folder is not found.
+ * Generates a DVT build configuration file from a log file.
+ * @param {Object} options - The options for generating the build configuration file.
+ * @param {string} options.logPath - The path to the log file.
+ * @param {string} options.workingDirectory - The working directory.
+ * @param {string[]} [options.tops=[]] - The tops to include in the build configuration file.
+ * @param {number} [options.semanticChecksTimeout=300] - The semantic checks timeout in seconds.
+ * @param {string} [options.buildFileName=dvt_build] - The name of the build configuration file.
+ * @param {Object[]} [options.pathTransformations=[]] - The path transformations.
+ * @returns {Promise<void>}
  */
-async function generateBuildConfigFile(logPath, workingDirectory, buildFileName = 'default') {
-    const dvtPath = path.join(workingDirectory, '.dvt');
+async function generateBuildConfigFile({
+    logPath,
+    workingDirectory,
+    tops=[],
+    semanticChecksTimeout=300,
+    buildFileName='default',
+    pathTransformations = [],
+}) {
+    const dvtPath = path.posix.join(workingDirectory, '.dvt');
 
     try {
         await fs.access(dvtPath);
@@ -19,14 +30,14 @@ async function generateBuildConfigFile(logPath, workingDirectory, buildFileName 
         throw new Error('Cannot find a .dvt folder in the current location.');
     }
 
-    const logType = path.basename(logPath, path.extname(logPath)); // notes
+    const logType = path.basename(logPath, path.extname(logPath));
 
     const { parse } = getParser(logType);
 
-    const buildFilePath = path.join(dvtPath, `${buildFileName}.build`);
-    const startLines = getStartLines({ logPath, workingDirectory });
-    const content = await parse(logPath, workingDirectory);
-    const endLines = getEndLines();
+    const buildFilePath = path.posix.join(dvtPath, `${buildFileName}.build`);
+    const startLines = getStartLines({ logPath, workingDirectory, semanticChecksTimeout });
+    const content = await parse(logPath, pathTransformations);
+    const endLines = getEndLines(tops);
 
     const buildFileContent = `${startLines}\n\n${content}\n${endLines}`;
 
@@ -38,13 +49,14 @@ async function generateBuildConfigFile(logPath, workingDirectory, buildFileName 
 }
 
 /**
- * Returns the first lines of the .build file.
- * @param {Object} config - The configuration object.
- * @param {string} config.logPath - The path to the log file.
- * @param {string} config.workingDirectory - The working directory.
- * @returns {string} The first lines of the .build file.
+ * Returns the start lines for the DVT build configuration file.
+ * @param {Object} options - The options for generating the start lines.
+ * @param {string} options.logPath - The path to the log file.
+ * @param {string} options.workingDirectory - The working directory.
+ * @param {number} options.semanticChecksTimeout - The semantic checks timeout in seconds.
+ * @returns {string}
  */
-function getStartLines({ logPath, workingDirectory }) {
+function getStartLines({ logPath, workingDirectory, semanticChecksTimeout }) {
     const dvtCompilationRoot = workingDirectory;
     const runLogPath = logPath ? path.normalize(logPath) : '';
     return text(`
@@ -58,15 +70,16 @@ function getStartLines({ logPath, workingDirectory }) {
         +dvt_init+vcs.vlogan -sverilog
         +dvt_init+ius.irun
         +dvt_compilation_root+${dvtCompilationRoot}
-        +dvt_semantic_checks_timeout+90
+        +dvt_semantic_checks_timeout+${semanticChecksTimeout}
         +incdir+${dvtCompilationRoot}
         # ------------------------------------------------------------------------------------
     `);
 }
 
 /**
- * Returns the last lines of the .build file.
- * @returns {string} The last lines of the .build file.
+ * Returns the last lines for the DVT build configuration file.
+ * @param {string[]} tops - The tops to include in the build configuration file.
+ * @returns {string}
  */
 function getEndLines(tops) {
     return text(`

@@ -70,8 +70,33 @@
                     "items": {
                         "type": "string"
                     },
-                    "default": [ "tb_top", "hw_top" ],
+                    "default": [
+                        "tb_top",
+                        "hw_top"
+                    ],
                     "description": "Configure which module will be elaborated as tops."
+                },
+                "dvt-build-configuration-file-generator.semanticChecksTimeoutProperty": {
+                    "type": "integer",
+                    "default": 90,
+                    "markdownDescription": "Sets the value of the `+dvt_semantic_checks_timeout parameter` parameter in the `.build` file. The parameter specifies the maximum time (in seconds) that semantic checks can take to parse a file before they are stopped (`0` means don't stop)."
+                },
+                "dvt-build-configuration-file-generator.pathTransformations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "from": {
+                                "type": "string",
+                                "description": "The path expenstion to be transformed (use glob pattern with capturing groups)"
+                            },
+                            "to": {
+                                "type": "string",
+                                "description": "The transformation to apply to the path"
+                            }
+                        }
+                    },
+                    "markdownDescription": "A list of transformations to apply for every path in the `.build` file, You can refer to groups from the `to` property with `$1`, `$2` and so on."
                 }
             }
         }
@@ -93,7 +118,7 @@
     },
     "dependencies": {
         "glob": "^8.1.0",
-        "glob-promise": "^6.0.2",
-        "glob-to-regexp": "^0.4.1"
+        "glob-capture-regex": "^1.0.3",
+        "glob-promise": "^6.0.2"
     }
 }

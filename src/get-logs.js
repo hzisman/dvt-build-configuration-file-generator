@@ -1,41 +1,39 @@
-const glob = require('glob-promise');
-const globToRegexp = require('glob-to-regexp');
+const globPromise = require('glob-promise');
 const os = require('os');
+const path = require('path');
+const globCaptureRegex = require('glob-capture-regex');
 
-const { globWithGroupsToGlob, globWithGroupsToRegexp } = require('./glob/glob-with-groups');
 
 /**
- * Get logs from search locations in the working directory.
- * @param {string} workingDirectory - The path to the working directory.
- * @param {string[]} searchLocations - The locations where logs are searched.
- * @param {string[]} excludeSearchLocations - The locations where the logs there will be ommited
- * @returns {Promise<{ displayName: string, path: string }[]>} - A promise that resolves to an array of objects containing the display name and path of logs.
+ * Get a list of log files from specified search locations.
+ * @param {string} workingDirectory - The directory to search for logs.
+ * @param {string[]} searchLocations - The list of locations to search for log files.
+ * @param {string[]} excludeSearchLocations - The list of locations to exclude from the search.
+ * @returns {Promise<Array<{ displayName: string, path: string }>>} - A list of log files with display names and paths.
  */
 async function getLogs(workingDirectory, searchLocations, excludeSearchLocations) {
     const logs = [];
 
     for (const location of searchLocations) {
+        const formattedLocation = location.startsWith('~')
+            ? path.posix.join(os.homedir(), location.slice(1))
+            : location.startsWith('/')
+                ? location
+                : path.posix.join(workingDirectory, location);
 
-        let globPattern;
-        if (location.startsWith('/')) {
-            globPattern = globWithGroupsToGlob(location);
-        } else if (location.startsWith('~')) {
-            globPattern = os.homedir() + globWithGroupsToGlob(location.slice(1));
-        } else {
-            globPattern = workingDirectory + '/' + globWithGroupsToGlob(location);
-        }
-       
-        const logFiles = await glob(globPattern);
+        const { glob } = globCaptureRegex(formattedLocation);
+
+        const logFiles = await globPromise(glob);
 
         // Remove leading dots from location to match with file names
-        const regexp = globWithGroupsToRegexp(location.replace(/^([.]+|~)/, ''));
+        const { regex } = globCaptureRegex(location.replace(/^([.]+|~)/, '**'));
 
         for (const file of logFiles) {
-            if (excludeSearchLocations.some(loc => globToRegexp(loc).test(file))) {
+            if (excludeSearchLocations.some(loc => globCaptureRegex(loc).regex.test(file))) {
                 continue;
             }
 
-            const displayName = file.match(regexp)?.slice(1).join(' - ') ?? file;
+            const displayName = file.match(regex)?.slice(1).join(' - ') ?? file;
             logs.push({ displayName, path: file });
         }
     }

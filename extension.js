@@ -21,8 +21,8 @@ async function selectLogFile(workingDirectory, logs, showFullPath) {
                 label: 'Existing logs',
                 kind: vscode.QuickPickItemKind.Separator,
             },
-            ...logs.map(log => ({ 
-                label: log.displayName, 
+            ...logs.map(log => ({
+                label: log.displayName,
                 ...(showFullPath ? { detail: log.path } : {}),
             })),
             {
@@ -47,8 +47,8 @@ async function selectLogFile(workingDirectory, logs, showFullPath) {
             defaultUri: vscode.Uri.parse(workingDirectory),
             openLabel: 'Select',
             canSelectMany: false,
-            filters: { 
-                'Log File': ["*.log"], 
+            filters: {
+                'Log File': ["*.log"],
                 'All Files': ["*"],
             },
         });
@@ -69,7 +69,7 @@ async function selectBuildConfigFileName() {
     const userInput = await vscode.window.showInputBox({
         placeHolder: 'Build configuration file name',
     });
-    
+
     return userInput === '' ? 'default': userInput;
 }
 
@@ -83,21 +83,31 @@ async function activate(context) {
     const disposable = vscode.commands.registerCommand('dvt-build-configuration-file-generator.generatebuildfile', async () => {
         const workingDirectory = vscode.workspace.workspaceFolders[0].uri.fsPath;
         const config = vscode.workspace.getConfiguration('dvt-build-configuration-file-generator');
-        
+
 		const searchLocations = config.get('searchLocations');
         const excludeSearchLocations = config.get('excludeSearchLocations')
         const logs = await getLogs(workingDirectory, searchLocations, excludeSearchLocations);
 
         const showFullPath = config.get('showFullPath');
-        const logFilePath = await selectLogFile(workingDirectory, logs, showFullPath);
-        if (logFilePath === undefined) return;
+        const logPath = await selectLogFile(workingDirectory, logs, showFullPath);
+        if (logPath === undefined) return;
 
-        const buildConfigFileName = await selectBuildConfigFileName();
-        if (buildConfigFileName === undefined) return;
+        const buildFileName = await selectBuildConfigFileName();
+        if (buildFileName === undefined) return;
 
+        const tops = config.get('tops');
+        const semanticChecksTimeout = config.get('semanticChecksTimeoutProperty');
+        const pathTransformations = config.get('pathTransformations');
         try {
-            await generateBuildConfigFile(logFilePath, workingDirectory, buildConfigFileName);
-            vscode.window.showInformationMessage(`${buildConfigFileName}.build file generated successfully!`);
+            await generateBuildConfigFile({
+                logPath,
+                workingDirectory,
+                tops,
+                semanticChecksTimeout,
+                pathTransformations,
+                buildFileName
+            });
+            vscode.window.showInformationMessage(`${buildFileName}.build file generated successfully!`);
             await vscode.commands.executeCommand('dvt.setCurrentBuildConfiguration');
         } catch (error) {
             await vscode.window.showErrorMessage(`Error generating build configuration file: ${error.message}`);

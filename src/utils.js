@@ -1,30 +1,28 @@
-const path = require('path');
+const globCaptureRegex = require('glob-capture-regex');
 
 /**
- * Returns a function that takes a path and normalizes it relative to the working directory.
- * @param {string} workingDirectory - The absolute path of the working directory.
- * @returns {Function} - A function that takes a path and returns a normalized path.
+ * Transforms a path based on a set of specified transformations.
+ *
+ * @param {string} path - The original path to transform.
+ * @param {Array<{ from: string, to: string }>} transformations - An array of transformation objects.
+ * @returns {string} - The transformed path.
  */
-function getNormalizePathFn(workingDirectory) {
-
-    const currentPathArray = workingDirectory.split('/');
-    const chiplet = currentPathArray[currentPathArray.length - 2];
-
-    /**
-     * Normalizes the given path relative to the working directory.
-     * @param {string} pathText - The path to be normalized.
-     * @returns {string} - The normalized path.
-     */
-    return function(pathText) {
-        let normalized = pathText.replace(`released/${chiplet}_cfg/soft_ip/${chiplet}/tb/`, `${chiplet}/tb/`);
-        normalized = path.relative(workingDirectory, normalized);
-        return normalized;
+function transformPath(path, transformations) {
+    let transformed = path;
+    for (const { from, to } of transformations) {
+        const { regex: { source } } = globCaptureRegex(from);
+        // remove the `^` and the `$` chars from the regular expression
+        const regex = new RegExp(source.slice(1, source.length - 1));
+        transformed = transformed.replace(regex, to);
     }
+
+    return transformed;
 }
 
 /**
- * Formats the given text by trimming each line and joining them with newline characters.
- * @param {string} unformattedText - The text to be formatted.
+ * Formats text by removing leading and trailing whitespace from each line.
+ *
+ * @param {string} unformattedText - The unformatted text to format.
  * @returns {string} - The formatted text.
  */
 function text(unformattedText) {
@@ -32,6 +30,6 @@ function text(unformattedText) {
 }
 
 module.exports = {
-    getNormalizePathFn,
+    transformPath,
     text,
-}
+};

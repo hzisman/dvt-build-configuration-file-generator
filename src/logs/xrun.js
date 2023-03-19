@@ -1,21 +1,19 @@
 const fs = require('fs/promises');
-const { getNormalizePathFn } = require('../utils');
+const { transformPath } = require('../utils');
 
 /**
- * Parses a single line of xrun command and returns a modified version of it based on certain conditions.
- *
- * @param {string} line - A single line of the xrun command.
- * @param {string} workingDirectory - The working directory for the build process.
- * @returns {string} - The modified line.
+ * Parses a line of the xrun command and applies any necessary transformations.
+ * @param {string} line - A line from the xrun command.
+ * @param {Object} pathTransformations - An object containing path transformations to apply.
+ * @returns {string} - The parsed line.
  */
-function parseLine(line, workingDirectory) {
-    const normalize = getNormalizePathFn(workingDirectory);
+function parseLine(line, pathTransformations) {
 
     // If the line contains a file location, normalize it.
     const match = line.match(/^([+]incdir[+])?(\/[\w/.]+)$/);
     if (match) {
         let [_, prefix, location] = match;
-        line = (prefix ?? '') + normalize(location);
+        line = (prefix ?? '') + transformPath(location, pathTransformations);
     }
 
     const flagsToSkip = [
@@ -46,11 +44,10 @@ function parseLine(line, workingDirectory) {
 }
 
 /**
- * Extracts the xrun command from the log file.
- *
- * @param {string} logPath - The path to the xrun.log file.
- * @returns {Promise<string>} - A Promise that resolves with the xrun command as a string.
- * @throws Will throw an error if the xrun command cannot be found in the log file.
+ * Extracts the xrun command from the given log file.
+ * @param {string} logPath - The path to the log file.
+ * @returns {Promise<string>} - The xrun command.
+ * @throws Will throw an error if the xrun command could not be found in the log file.
  */
 async function extractXrunCommand(logPath) {
     let logContent = await fs.readFile(logPath, { encoding: 'utf-8' });
@@ -66,20 +63,19 @@ async function extractXrunCommand(logPath) {
 }
 
 /**
- * Parses the xrun command from the log file and returns a the build file content.
- *
- * @param {string} runLogPath - The path to the xrun.log file.
- * @param {string} workingDirectory - The working directory for the build process.
- * @returns {Promise<string>} - A Promise that resolves with the build file content as a string.
+ * Parses the xrun command from the given log file and generates the build file content.
+ * @param {string} runLogPath - The path to the log file.
+ * @param {Object} pathTransformations - An object containing path transformations to apply.
+ * @returns {Promise<string>} - The content of the build file.
  */
-async function parse(runLogPath, workingDirectory) {
+async function parse(runLogPath, pathTransformations) {
     const xrunCommand = await extractXrunCommand(runLogPath);
 
     let buildFileContent = '';
 
     // Parse each line of the xrun command and append it to the buildFileContent string.
     for (const line of xrunCommand.split('\n')) {
-        const result = parseLine(line.trim(), workingDirectory);
+        const result = parseLine(line.trim(), pathTransformations);
         if (result) {
             buildFileContent += result + '\n';
         }
