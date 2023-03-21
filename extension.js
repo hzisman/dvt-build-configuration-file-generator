@@ -96,13 +96,15 @@ async function activate(context) {
         if (buildFileName === undefined) return;
 
         const buildFileConfigSettings = vscode.workspace.getConfiguration('dvt-build-configuration-file-generator.buildFile');
-        const buildFileConfig = {
-            tops: buildFileConfigSettings.get('tops'),
-            semanticChecksTimeout: buildFileConfigSettings.get('semanticChecksTimeout'),
-            pathTransformations: buildFileConfigSettings.get('pathTransformations'),
-            skipDirectives: buildFileConfigSettings.get('skipDirectives'),
-            skipCompiles: buildFileConfigSettings.get('skipCompiles'),
-        }
+        const buildFileConfig = Object.fromEntries([
+            'tops',
+            'semanticChecksTimeout',
+            'pathTransformations',
+            'skipDirectives',
+            'skipCompiles',
+            'deleteSkippedDirectives',
+        ].map(config => [config, buildFileConfigSettings.get(config)]));
+
         try {
             await generateBuildConfigFile({
                 logPath,

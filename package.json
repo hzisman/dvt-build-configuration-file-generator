@@ -108,6 +108,11 @@
                     ],
                     "description": "Directives to skip for run time improvement"
                 },
+                "dvt-build-configuration-file-generator.buildFile.deleteSkippedDirectives": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Controls wheater or not to delete the the skipped directives instead of jest add them as `+dvt_skip_directive` flag"
+                },
                 "dvt-build-configuration-file-generator.buildFile.skipCompiles": {
                     "type": "array",
                     "items": {

@@ -32,10 +32,10 @@ async function generateBuildConfigFile({
 
     const buildFilePath = path.posix.join(dvtPath, `${buildFileName}.build`);
     const startLines = getStartLines({ logPath, workingDirectory, buildFileConfig });
-    const content = await parse(logPath, buildFileConfig.pathTransformations);
+    const content = await parse(logPath, workingDirectory, buildFileConfig);
     const endLines = getEndLines(buildFileConfig.tops);
 
-    const buildFileContent = `${startLines}\n\n${content}\n${endLines}`;
+    const buildFileContent = `${startLines}${content}\n${endLines}`;
 
     try {
         await fs.writeFile(buildFilePath, buildFileContent, { encoding: 'utf-8', flag: 'w' });
@@ -56,7 +56,7 @@ function getStartLines({ logPath, workingDirectory, buildFileConfig }) {
     const dvtCompilationRoot = workingDirectory;
     const runLogPath = logPath ? path.normalize(logPath) : '';
 
-    const { semanticChecksTimeout, skipDirectives, skipCompiles } = buildFileConfig;
+    const { semanticChecksTimeout, skipDirectives, skipCompiles, deleteSkippedDirectives } = buildFileConfig;
     return text(`
         # ------------------------------------------------------------------------------------
         # This file has been automatically generated from the following log file:
@@ -70,9 +70,12 @@ function getStartLines({ logPath, workingDirectory, buildFileConfig }) {
         +dvt_compilation_root+${dvtCompilationRoot}
         +dvt_semantic_checks_timeout+${semanticChecksTimeout}
         +incdir+${dvtCompilationRoot}
+
         # Run time improvments
-        ${skipDirectives.map(d => `+dvt_skip_directive+"${d}"`).join('\n')}
+        ${skipDirectives.map(d => `+dvt_skip_directive+"${d}"`).join('\n')} ${deleteSkippedDirectives ? '# These files were deleted' : ''}
         ${skipCompiles.map(c => `+dvt_skip_compile+"${c}"`).join('\n')}
+        # Map verilog files to systemVerilog
+        +dvt_ext_map+SystemVerilog_2009+.v+.vh
         # ------------------------------------------------------------------------------------
     `);
 }
